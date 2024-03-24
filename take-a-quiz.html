@@ -1,11 +1,163 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Take a quiz</title>
+    <link rel="stylesheet" href="navbar.css">
+    <link rel="stylesheet" href="general.css">
+    <link rel="stylesheet" href="cards.css">
+  </head>
+  <body>
+    <ul class="topnav">
+      <li><a  href="index.html">Home</a></li>
+      <li><a  href="add-question.html">Add questions</a></li>
+      <li><a  href="make-a-quiz.html">Create a quiz</a></li>
+      <li><a class="active" href="take-a-quiz.html">Take a quiz</a></li>
+      <li class="right"><a href="#about">About</a></li>
+    </ul>
+
+   
+    <div id="selectQuiz"> 
+      <h1>Select a quiz from below</h1>
+    </div>
+    <div id="list" class="cards"></div>
+    <hr>
+
+    <div id="quizzes" class="cards"></div>
+    <div id="buttons"></div>
+       
+    <script>
+      let host = "http://localhost:8080";
+      let quizzes = [];
+      let buttonIndex = 0;
+      let allQuestionIds = [];
+ 
+      displayQuizzes();
+
+      async function getAll() {
+        let response = await fetch(host + "/quizzes");
+        let result = await response.json();
+        return result;
+      }
+    
+      async function getQuestion(id) {
+        let response = await fetch(host + "/questions/" + id);
+        let result = await response.json();
+        return result;
+      }
+
+      async function displayQuizzes() {
+       
+        quizzes = await getAll();
+      
+        let index = 0;
+        let list = document.getElementById("list");
+        list.innerHTML = "";
+
+        for (let quiz of quizzes) {
+          let div = document.createElement("div");
+          div.className = "card";
+          let innerHtml = `
+         
+        <div class="container" onclick=selectQuiz([${quiz.questionIds}])>
+          <h4><b>${quiz.id}</b></h4> 
+          <p><b>${quiz.title}</b></p>
+          <p><b>(${quiz.questionIds.length} questions)</b></p>
+        </div>
+     
+            `;
+          index ++;
+          div.innerHTML = innerHtml;
+          list.appendChild(div);
+        }
+      }
+      
+      function selectQuiz(questionIds){
+        allQuestionIds = questionIds;
+        startQuiz();
+      }
+      async function startQuiz(){
+        document.getElementById("selectQuiz").style.display = "none";
+        document.getElementById("list").style.display = "none";
+        let quizzes = document.getElementById("quizzes");
+        let questions = [];
+        for(let id of allQuestionIds){
+          let question = await getQuestion(id);
+          questions.push(question);
+        }
+        quizzes.innerHTML = "";
+        for (let i=0;i<questions.length;i++) {
+          if(i == buttonIndex){
+            let div = document.createElement("div");
+            div.className = "card";
+            let innerHtml = `
+            <img src="http://localhost:8080/questions/${questions[i].id}/image" alt="selection" style="width:100%">
+            <div class="container" >
+              <h4><b>${questions[i].id}</b></h4> 
+              <p>${questions[i].description}</p>
+              <form>
+                <input type="radio" id="q${questions[i].id}ptionA" name="q2Answer" value="A">
+                <label for="q${questions[i].id}ptionA">${questions[i].choices[0]}</label><br>
+
+                <input type="radio" id="q${questions[i].id}ptionB" name="q2Answer" value="B">
+                <label for="q${questions[i].id}ptionB">${questions[i].choices[1]}</label><br>
+
+                <input type="radio" id="q${questions[i].id}ptionC" name="q2Answer" value="C">
+                <label for="q${questions[i].id}ptionC">${questions[i].choices[2]}</label><br>       
+              </form>
+            </div>
+            `;
+              div.innerHTML = innerHtml;
+              quizzes.appendChild(div);
+          }
+        }
+        let buttons = document.getElementById("buttons");
+        buttons.innerHTML = "";
+        
+        if(buttonIndex < allQuestionIds.length -1){
+          let buttonDiv = document.createElement("div");
+          buttonDiv.className = "container";
+          let buttonHtml = `
+          `;
+          if(buttonIndex != 0){
+            buttonHtml = `
+            <p>(Question ${buttonIndex + 1} out of ${allQuestionIds.length})</p>
+            <button onclick="goPrev(); return false;">Prev</button> &nbsp; <button onclick="goNext(); return false;">Next</button>
+          `;
+
+          } else {
+            buttonHtml = `
+            <p>(Question ${buttonIndex + 1} out of ${allQuestionIds.length})</p>
+            <button onclick="goNext(); return false;">Next</button>
+          `;
+          }
+          
+          buttonDiv.innerHTML = buttonHtml;
+          buttons.appendChild(buttonDiv);
+        } else {
+          let buttonDiv = document.createElement("div");
+          buttonDiv.className = "container";
+          let buttonHtml = `
+          `;
+          if(buttonIndex != 0){
+            buttonHtml = `
+            <p>(Question ${buttonIndex + 1} out of ${allQuestionIds.length})</p>
+            <button onclick="goPrev(); return false;">Prev</button>
+          `;
+          }
+          buttonDiv.innerHTML = buttonHtml;
+          buttons.appendChild(buttonDiv);
+        }
+      }
+      function goNext(){
+        buttonIndex ++;
+        startQuiz();
+      }
+      function goPrev(){
+        buttonIndex --;
+        startQuiz();
+      }
+    </script>
+  </body>
 </html>
