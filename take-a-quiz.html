@@ -28,7 +28,7 @@
     <div id="buttons"></div>
        
     <script>
-      let host = "http://localhost:8080";
+      let host = "https://c322-midterm-backend-latest-1-4k7b.onrender.com";
       let quizzes = [];
       let buttonIndex = 0;
       let allQuestionIds = [];
@@ -92,7 +92,7 @@
             let div = document.createElement("div");
             div.className = "card";
             let innerHtml = `
-            <img src="http://localhost:8080/questions/${questions[i].id}/image" alt="selection" style="width:100%">
+            <img src="https://c322-midterm-backend-latest-1-4k7b.onrender.com/questions/${questions[i].id}/image" alt="selection" style="width:100%">
             <div class="container" >
               <h4><b>${questions[i].id}</b></h4> 
               <p>${questions[i].description}</p>

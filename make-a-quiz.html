@@ -41,7 +41,7 @@
     
 
     <script>
-      let host = "http://localhost:8080";
+      let host = "https://c322-midterm-backend-latest-1-4k7b.onrender.com";
       let questions = [];
       let selections = [];
       let quiz = {};
@@ -69,7 +69,7 @@
           div.className = "card";
           let innerHtml = `
          
-        <img src="http://localhost:8080/questions/${question.id}/image" alt="question" style="width:100%" onclick=selectQuestion(${index})>
+        <img src="https://c322-midterm-backend-latest-1-4k7b.onrender.com/questions/${question.id}/image" alt="question" style="width:100%" onclick=selectQuestion(${index})>
         <div class="container" onclick=selectQuestion(${index})>
           <h4><b>${question.id}</b></h4> 
           <p>${question.description}</p>
@@ -100,7 +100,7 @@
           div.className = "card";
           let innerHtml = `
          
-        <img src="http://localhost:8080/questions/${selection.id}/image" alt="selection" style="width:100%">
+        <img src="https://c322-midterm-backend-latest-1-4k7b.onrender.com/questions/${selection.id}/image" alt="selection" style="width:100%">
         <div class="container" onclick=deSelectQuestion(${index})>
           <h4><b>${selection.id}</b></h4> 
           <p>${selection.description}</p>
